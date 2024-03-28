@@ -1,0 +1,317 @@
+CREATE TABLE Staff (
+  StaffID DECIMAL(10,0) NOT NULL,
+  Name VARCHAR(20) NOT NULL,
+  Job VARCHAR(30),
+  Salary DECIMAL(7,2),
+  Commission DECIMAL(7,2),
+  HireDate DATE,
+  Address VARCHAR(60),
+  Phone VARCHAR(24),
+  PRIMARY KEY (StaffID)
+);
+
+CREATE TABLE Category (
+  CategoryID INT NOT NULL,
+  CategoryName VARCHAR(30) NOT NULL,
+  Description VARCHAR(300),
+  PRIMARY KEY (CategoryID)
+);
+
+CREATE TABLE Customer (
+  CustomerID INT NOT NULL,
+  CustomerName VARCHAR(30),
+  Phone VARCHAR(24),
+  PRIMARY KEY (CustomerID)
+);
+
+CREATE TABLE Supplier (
+  SupplierID INT NOT NULL,
+  CompanyName VARCHAR(40) NOT NULL,
+  SupplierName VARCHAR(30),
+  Address VARCHAR(60),
+  Phone VARCHAR(24),
+  PRIMARY KEY (SupplierID)
+);
+
+CREATE TABLE Product (
+  ProductID INT NOT NULL,
+  ProductName VARCHAR(40) NOT NULL,
+  SupplierID INT,
+  CategoryID INT,show tables
+  Quantity VARCHAR(20),
+  UnitPrice DECIMAL(10, 2),
+  PRIMARY KEY (ProductID),
+  CHECK (UnitPrice >= 0),
+  CONSTRAINT FK_Product_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
+  CONSTRAINT FK_Product_Supplier FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
+);
+
+CREATE TABLE Transaction (
+  TransactionID INT NOT NULL,
+  CustomerID INT,
+  StaffID DECIMAL(10,0),
+  TransactionDate DATE,
+  PRIMARY KEY (TransactionID),
+  CONSTRAINT FK_Transaction_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+  CONSTRAINT FK_Transaction_Staff FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
+
+CREATE TABLE TransactionDetails (
+  TransactionID INT NOT NULL,
+  ProductID INT NOT NULL,
+  UnitPrice DECIMAL(10, 2) NOT NULL,
+  Quantity INT NOT NULL,
+  Discount DECIMAL(5, 4) NOT NULL,
+  PRIMARY KEY (TransactionID, ProductID),
+  CHECK (Discount >= 0 AND Discount <= 1),
+  CHECK (Quantity > 0),
+  CHECK (UnitPrice >= 0),
+  CONSTRAINT FK_TransactionDetails_Transaction FOREIGN KEY (TransactionID) REFERENCES Transaction(TransactionID),
+  CONSTRAINT FK_TransactionDetails_Product FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
+
+-------------------------------------------------------------------------------------
+Inserting values
+
+
+-- Insert values into Staff table
+INSERT INTO Staff (StaffID, Name, Job, Salary, Commission, HireDate, Address, Phone)
+VALUES
+(1, 'John Doe', 'Manager', 5000.00, 0.05, '2023-01-15', '123 Main St, City, Country', '123-456-7890'),
+(2, 'Jane Smith', 'Sales Associate', 3000.00, 0.03, '2023-02-20', '456 Elm St, City, Country', '987-654-3210'),
+(3, 'Michael Johnson', 'Assistant Manager', 4500.00, 0.04, '2023-03-10', '789 Oak St, City, Country', '111-222-3333'),
+(4, 'Emily Brown', 'Cashier', 2500.00, 0.02, '2023-04-05', '101 Pine St, City, Country', '444-555-6666'),
+(5, 'David Wilson', 'Stock Clerk', 2800.00, 0.02, '2023-05-12', '202 Cedar St, City, Country', '777-888-9999'),
+(6, 'Sarah Martinez', 'Sales Manager', 5500.00, 0.06, '2023-06-20', '303 Maple St, City, Country', '333-222-1111'),
+(7, 'Robert Anderson', 'Storekeeper', 3200.00, 0.03, '2023-07-25', '404 Walnut St, City, Country', '999-888-7777'),
+(8, 'Jessica Garcia', 'Cashier', 2600.00, 0.02, '2023-08-30', '505 Ash St, City, Country', '666-555-4444'),
+(9, 'Daniel Taylor', 'Sales Associate', 3100.00, 0.03, '2023-09-10', '606 Birch St, City, Country', '222-333-4444'),
+(10, 'Olivia Hernandez', 'Assistant Manager', 4800.00, 0.04, '2023-10-15', '707 Oak St, City, Country', '888-777-6666');
+
+-- Insert values into Category table
+INSERT INTO Category (CategoryID, CategoryName, Description)
+VALUES
+(1, 'Electronics', 'Products related to electronic devices'),
+(2, 'Clothing', 'Apparel and fashion accessories'),
+(3, 'Home & Garden', 'Items for home decor and gardening'),
+(4, 'Books', 'Books and reading materials'),
+(5, 'Toys', 'Children''s toys and games'),
+(6, 'Sports & Outdoors', 'Equipment for sports and outdoor activities'),
+(7, 'Health & Beauty', 'Healthcare and beauty products'),
+(8, 'Food & Beverage', 'Food items and beverages'),
+(9, 'Automotive', 'Auto parts and accessories'),
+(10, 'Pets', 'Supplies for pets and pet care');
+
+-- Insert values into Customer table
+INSERT INTO Customer (CustomerID, CustomerName, Phone)
+VALUES
+(1, 'Alice Johnson', '111-222-3333'),
+(2, 'Bob Smith', '444-555-6666'),
+(3, 'Charlie Brown', '777-888-9999'),
+(4, 'Diana Garcia', '999-888-7777'),
+(5, 'Eva Martinez', '666-555-4444'),
+(6, 'Frank Wilson', '222-333-4444'),
+(7, 'Grace Hernandez', '888-777-6666'),
+(8, 'Henry Taylor', '123-456-7890'),
+(9, 'Isabella Anderson', '987-654-3210'),
+(10, 'Jack Davis', '111-222-3333');
+
+-- Insert values into Supplier table
+INSERT INTO Supplier (SupplierID, CompanyName, SupplierName, Address, Phone)
+VALUES
+(1, 'TechCo', 'TechCo Inc.', '123 Tech St, Tech City, Techland', '111-222-3333'),
+(2, 'FashionX', 'FashionX Corp.', '456 Fashion Ave, Fashion City, Fashionland', '444-555-6666'),
+(3, 'HomeDecor', 'HomeDecor Ltd.', '789 Decor St, Decor City, Decorland', '777-888-9999'),
+(4, 'BookWorm', 'BookWorm Enterprises', '101 Book St, Book City, Bookland', '999-888-7777'),
+(5, 'ToyZone', 'ToyZone Co.', '202 Toy St, Toy City, Toyland', '666-555-4444'),
+(6, 'SportsGear', 'SportsGear Ltd.', '303 Sports St, Sports City, Sportsland', '222-333-4444'),
+(7, 'BeautyPlus', 'BeautyPlus Inc.', '404 Beauty St, Beauty City, Beautyland', '888-777-6666'),
+(8, 'FoodMaster', 'FoodMaster Corp.', '505 Food St, Food City, Foodland', '123-456-7890'),
+(9, 'AutoParts', 'AutoParts Ltd.', '606 Auto St, Auto City, Autoland', '987-654-3210'),
+(10, 'PetCare', 'PetCare Enterprises', '707 Pet St, Pet City, Petland', '111-222-3333');
+
+-- Insert values into Product table
+INSERT INTO Product (ProductID, ProductName, SupplierID, CategoryID, Quantity, UnitPrice)
+VALUES
+(1, 'Laptop', 1, 1, '10 units', 999.99),
+(2, 'T-shirt', 2, 2, '50 units', 19.99),
+(3, 'Sofa', 3, 3, '5 units', 499.99),
+(4, 'Book', 4, 4, '100 units', 9.99),
+(5, 'Action Figure', 5, 5, '20 units', 14.99),
+(6, 'Basketball', 6, 6, '15 units', 29.99),
+(7, 'Shampoo', 7, 7, '30 units', 7.99),
+(8, 'Bread', 8, 8, '50 units', 2.99),
+(9, 'Car Battery', 9, 9, '10 units', 99.99),
+(10, 'Dog Food', 10, 10, '40 units', 19.99);
+
+-- Insert values into Transaction table
+INSERT INTO Transaction (TransactionID, CustomerID, StaffID, TransactionDate)
+VALUES
+(1, 1, 1, '2023-01-01'),
+(2, 2, 2, '2023-01-02'),
+(3, 3, 3, '2023-01-03'),
+(4, 4, 4, '2023-01-04'),
+(5, 5, 5, '2023-01-05'),
+(6, 6, 6, '2023-01-06'),
+(7, 7, 7, '2023-01-07'),
+(8, 8, 8, '2023-01-08'),
+(9, 9, 9, '2023-01-09'),
+(10, 10, 10, '2023-01-10');
+
+-- Insert values into TransactionDetails table
+INSERT INTO TransactionDetails (TransactionID, ProductID, UnitPrice, Quantity, Discount)
+VALUES
+(1, 1, 999.99, 1, 0.1),
+(2, 2, 19.99, 2, 0.05),
+(3, 3, 499.99, 1, 0.15),
+(4, 4, 9.99, 5, 0.02),
+(5, 5, 14.99, 3, 0.1),
+(6, 6, 29.99, 2, 0.05),
+(7, 7, 7.99, 4, 0.1),
+(8, 8, 2.99, 10, 0.05),
+(9, 9, 99.99, 1, 0),
+(10, 10, 19.99, 2, 0.1);
+
+
+----------------------------------------------------------------------------------
+Queries
+
+1. Retrieve all staff members whose salary is greater than $4000.                                                      
+
+SELECT * FROM Staff WHERE Salary > 4000.00;
+
+2. Retrieve the names of all categories;
+
+SELECT CategoryName FROM Category;
+
+3. Retrieve the names of all customers whose phone numbers start with '111'.
+
+SELECT CustomerName FROM Customer WHERE Phone LIKE '111%';
+
+4. Retrieve the names of all suppliers along with their company names.
+
+SELECT SupplierName, CompanyName FROM Supplier;
+
+5. Retrieve the product names along with their corresponding categories.
+
+SELECT ProductName, CategoryName FROM Product 
+INNER JOIN Category ON Product.CategoryID = Category.CategoryID;
+
+6. Retrieve the total quantity and unit price of all products.
+
+SELECT ProductID, ProductName, Quantity, UnitPrice FROM Product;
+
+7. Retrieve the transaction IDs along with their corresponding customer names.
+
+SELECT TransactionID, CustomerName FROM Transaction 
+INNER JOIN Customer ON Transaction.CustomerID = Customer.CustomerID;
+
+8. Retrieve the transaction IDs along with the names of the staff who conducted them.
+
+SELECT TransactionID, Name AS StaffName FROM Transaction 
+INNER JOIN Staff ON Transaction.StaffID = Staff.StaffID;
+
+9. Retrieve the product names along with their unit prices and quantities available.
+
+SELECT ProductName, UnitPrice, Quantity FROM Product;
+
+10. Retrieve the transaction IDs along with the corresponding product names and quantities sold.
+
+SELECT td.TransactionID, p.ProductName, td.Quantity 
+FROM TransactionDetails td
+INNER JOIN Product p ON td.ProductID = p.ProductID;
+
+
+---------------------------------------------------------------------------------------
+Triggers
+
+1.Trigger for Transaction table:
+Suppose you want to ensure that the TransactionDate is always set to the current date when a new transaction is inserted. You can achieve this with a BEFORE INSERT trigger.
+
+DELIMITER //
+
+CREATE TRIGGER before_transaction_insert
+BEFORE INSERT ON Transaction
+FOR EACH ROW
+BEGIN
+    SET NEW.TransactionDate = CURDATE();
+END;
+//
+
+DELIMITER ;
+
+
+2.Trigger for TransactionDetails table:
+Suppose you want to ensure that the UnitPrice is always positive when inserting or updating a record in the TransactionDetails table. You can achieve this with a BEFORE INSERT and a BEFORE UPDATE trigger.
+
+---before transaction details insert--------
+
+DELIMITER //
+
+CREATE TRIGGER before_transaction_details_insert
+BEFORE INSERT ON TransactionDetails
+FOR EACH ROW
+BEGIN
+    IF NEW.UnitPrice <= 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'UnitPrice must be positive';
+    END IF;
+END;
+//
+
+--------before transaction details update----------
+
+CREATE TRIGGER before_transaction_details_update
+BEFORE UPDATE ON TransactionDetails
+FOR EACH ROW
+BEGIN
+    IF NEW.UnitPrice <= 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'UnitPrice must be positive';
+    END IF;
+END;
+//
+
+DELIMITER ;
+
+
+----------------------------------------------------------------------------------------
+Procedures
+
+Procedure 1: Retrieve All Transactions by Customer
+
+
+DELIMITER //
+
+CREATE PROCEDURE GetTransactionsByCustomer(IN custID INT)
+BEGIN
+    SELECT t.TransactionID, t.TransactionDate, c.CustomerName, s.Name AS StaffName, p.ProductName, td.UnitPrice, td.Quantity, td.Discount
+    FROM Transaction t
+    JOIN Customer c ON t.CustomerID = c.CustomerID
+    JOIN Staff s ON t.StaffID = s.StaffID
+    JOIN TransactionDetails td ON t.TransactionID = td.TransactionID
+    JOIN Product p ON td.ProductID = p.ProductID
+    WHERE c.CustomerID = custID;
+END //
+
+DELIMITER ;
+
+To Run : CALL GetTransactionsByCustomer(1); -- Example for customer with ID 1
+
+
+
+
+Procedure 2: Calculate Total Sales for a Staff Member
+
+DELIMITER //
+
+CREATE PROCEDURE CalculateTotalSales(IN staffID DECIMAL(10, 0), OUT totalSales DECIMAL(10, 2))
+BEGIN
+    SELECT SUM(td.UnitPrice * td.Quantity * (1 - td.Discount)) INTO totalSales
+    FROM Transaction t
+    JOIN TransactionDetails td ON t.TransactionID = td.TransactionID
+    WHERE t.StaffID = staffID;
+END //
+
+DELIMITER ;
+
+To Run :CALL CalculateTotalSales(1, @totalSales); -- Example for staff with ID 1
+SELECT @totalSales;
